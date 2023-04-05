@@ -10,8 +10,8 @@ dotenv.config();
 //import { promisify } from "util";
 
 const apiKey = process.env.apiKey;
-const username = process.env.USERNAME;
-const password = process.env.PASSWORD;
+const username = process.env.USER;
+const password = process.env.PASS;
 //const getYoutubeVideoInfo = require('./getYoutubeVideoInfo');
 
 const videoId = 'StqioKCPqF8';
@@ -28,7 +28,6 @@ await get_info(videoId, apiKey)
   .catch(err => {
     console.error(err);
   });
-
 
 // Create SQLite object
 let db = new sqlite3.Database('./chat.db', sqlite3.OPEN_READWRITE, (err) => {
