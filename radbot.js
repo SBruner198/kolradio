@@ -67,10 +67,10 @@ async function get_link(command,nlinks) {
     let sql;
     switch (command) {
         case "last":
-            sql = "SELECT name, link FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
+            sql = "SELECT DISTINCT name, link FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
             break;
         case "shuffle":
-            sql = "SELECT name, link FROM youtube ORDER BY RANDOM() LIMIT "+nlinks+";";
+            sql = "SELECT DISTINCT name, link FROM youtube ORDER BY RANDOM() LIMIT "+nlinks+";";
             break;
         case "spit":
             sql = "SELECT name, link FROM youtube ORDER BY RANDOM() LIMIT 1;";
