@@ -70,10 +70,10 @@ async function get_link(command,nlinks) {
             sql = "SELECT DISTINCT name, link FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
             break;
         case "shuffle":
-            sql = "SELECT DISTINCT name, link FROM youtube ORDER BY RANDOM() LIMIT "+nlinks+";";
+            sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT "+nlinks+";";
             break;
         case "spit":
-            sql = "SELECT name, link FROM youtube ORDER BY RANDOM() LIMIT 1;";
+            sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
             break;
     };
     
