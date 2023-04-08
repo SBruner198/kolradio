@@ -14,21 +14,6 @@ const username = process.env.USER;
 const password = process.env.PASS;
 //const getYoutubeVideoInfo = require('./getYoutubeVideoInfo');
 
-const videoId = 'StqioKCPqF8';
-
-await get_info(videoId, apiKey)
-  .then(videoInfo => {
-    const title = videoInfo['title'];
-    const duration = videoInfo['duration'];
-    const thumbnail = videoInfo['thumbnail'];
-    console.log(title);
-    console.log(duration)
-    console.log(videoInfo);
-  })
-  .catch(err => {
-    console.error(err);
-  });
-
 // Create SQLite object
 let db = new sqlite3.Database('./chat.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -200,8 +185,17 @@ chatbot.start(async (response) => {
         const vid_id = vid_id_regex.exec(link)[1];
         console.log(vid_id);
 
+        const videoInfo = await get_info(vid_id, apiKey)
+        .catch(err => {
+            console.error(err);
+        });
+
+        const title = videoInfo['title'];
+        const duration = videoInfo['duration'];
+        const thumbnail = videoInfo['thumbnail'];
+        
       // Insert data into SQLite database
-        db.run(`INSERT INTO youtube (timestamp, name, player_id, link, vid_id) VALUES (?, ?, ?, ?, ?)`, [timestamp, who.name, who.id, link, vid_id], function(err) {
+        db.run(`INSERT INTO youtube (timestamp, name, player_id, link, vid_id, title, duration, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [timestamp, who.name, who.id, link, vid_id, title, duration, thumbnail], function(err) {
         if (err) {
             return console.error(err.message);
         }
