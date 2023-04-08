@@ -19,10 +19,10 @@ export async function get_info(videoId, apiKey) {
     const video = response.data.items[0];
     const title = video.snippet.title;
     const thumbnail = video.snippet.thumbnails.medium.url;
-    const tags = video.snippet.tags;
+    //const tags = video.snippet.tags;
     //const duration = moment.duration(video.contentDetails.duration).format('hh:mm:ss');
     const duration = moment.utc(moment.duration(video.contentDetails.duration).asMilliseconds()).format('HH:mm:ss');
-    return {title, thumbnail, duration, tags};
+    return {title, thumbnail, duration};
   });
 }
 
