@@ -42,13 +42,16 @@ function help() {
         -ex: "radbot last 5"
         shuffle [quantity]: Kmail you a mix of [quantity] (20 or less) youtube links from the /radio database.
         -ex: "radbot shuffle 5"
-        spit: I'll spit out a random song from the database into /radio chat.
-        -ex: "radbot spit"
+        spit ["short"|"long"]: I'll spit out a random song from the database into /radio chat.
+        -ex: "radbot spit" for songs 17m or less
+        -ex: "radbot spit short" for songs 6m or less
+        -ex: "radbot spit long" for songs 17m or more
     `;
 };
 
 async function get_link(command,nlinks) {
     console.log(command)
+    console.log(nlinks)
     let sql;
     switch (command) {
         case "last":
@@ -58,7 +61,13 @@ async function get_link(command,nlinks) {
             sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT "+nlinks+";";
             break;
         case "spit":
-            sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+            if (nlinks == "long") {
+                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration >= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+            } else if (nlinks == "short") {
+                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:06:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+            } else {
+                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+            }
             break;
     };
     
@@ -102,6 +111,7 @@ chatbot.start(async (response) => {
    //   )
    // }
     const args = msg.split(" ");
+    //console.log(args)
 
     if (args[0].toLowerCase() == 'radbot') {
     switch (args[1].toLowerCase()) {
@@ -152,6 +162,10 @@ chatbot.start(async (response) => {
                     `Are you trying to get me in trouble? I hock em one at a time friend.`
                 );
                 //console.log("Whelp")
+            } else if (args[1] == "spit" && (args[2] == "long" || args[2] == "short")) {
+                const spit = await get_link(args[1], args[2]);
+                console.log(spit)
+                return response.reply(spit);
             } else {
                 const spit = await get_link(args[1]);
                 console.log(spit)
