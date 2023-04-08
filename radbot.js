@@ -177,11 +177,11 @@ chatbot.start(async (response) => {
     }
 
 
-    const youtube_test = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/;
+    const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(.*?((?=[&#?])|$))/;
     
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
-        const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
+        const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
         const vid_id = vid_id_regex.exec(link)[1];
         console.log(vid_id);
 
