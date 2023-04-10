@@ -25,7 +25,7 @@ let db = new sqlite3.Database('./chat.db', sqlite3.OPEN_READWRITE, (err) => {
   // Credentials
 const chatbot = new KoLBot(username, password)
 
-// Promisify query (prevents callbacks)
+// Promisify query (prevents callbacks)h
 //const query = promisify(db.all).bind(db);
 
 // Function to hopefully check for numerics
@@ -55,18 +55,18 @@ async function get_link(command,nlinks) {
     let sql;
     switch (command) {
         case "last":
-            sql = "SELECT DISTINCT name, link FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
+            sql = "SELECT DISTINCT name, link, FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
             break;
         case "shuffle":
             sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT "+nlinks+";";
             break;
         case "spit":
             if (nlinks == "long") {
-                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration >= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+                sql = "SELECT y.name, y.link, y.nsfw FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration >= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
             } else if (nlinks == "short") {
-                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:06:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+                sql = "SELECT y.name, y.link, y.nsfw FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:06:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
             } else {
-                sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
+                sql = "SELECT y.name, y.link, y.nsfw FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube WHERE duration <= '00:17:00') v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT 1;";
             }
             break;
     };
@@ -80,9 +80,16 @@ async function get_link(command,nlinks) {
                 console.error(err.message);
                 reject(err);
             }
-
-            const links = rows.map(row => row.name + ": " + row.link).join("\n");
-            //console.log(links);
+            
+            // const links = rows.map(row => row.name + ": " + row.link).join("\n");
+            const links = rows.map(row => {
+                if (row.nsfw == "true") {
+                    return "[NSFW] " + row.name + ": " + row.link;
+                } else {
+                    return row.name + ": " + row.link;
+                }
+            }).join("\n");
+            console.log(links);
             resolve(links);
         });
     });
@@ -207,9 +214,16 @@ chatbot.start(async (response) => {
         const title = videoInfo['title'];
         const duration = videoInfo['duration'];
         const thumbnail = videoInfo['thumbnail'];
+
+        let nsfw;
+        if (msg.toLowerCase().includes("nsfw")) {
+            nsfw = "true";
+        } else {
+            nsfw = "false";
+        };
         
       // Insert data into SQLite database
-        db.run(`INSERT INTO youtube (timestamp, name, player_id, link, vid_id, title, duration, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [timestamp, who.name, who.id, link, vid_id, title, duration, thumbnail], function(err) {
+        db.run(`INSERT INTO youtube (timestamp, name, player_id, link, vid_id, title, duration, thumbnail, nsfw) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [timestamp, who.name, who.id, link, vid_id, title, duration, thumbnail, nsfw], function(err) {
         if (err) {
             return console.error(err.message);
         }
