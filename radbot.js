@@ -55,10 +55,10 @@ async function get_link(command,nlinks) {
     let sql;
     switch (command) {
         case "last":
-            sql = "SELECT DISTINCT name, link, FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
+            sql = "SELECT DISTINCT name, link, nsfw FROM youtube ORDER BY rowid DESC LIMIT "+nlinks+";";
             break;
         case "shuffle":
-            sql = "SELECT y.name, y.link FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT "+nlinks+";";
+            sql = "SELECT y.name, y.link, y.nsfw FROM youtube y INNER JOIN (SELECT DISTINCT name, vid_id FROM youtube) v ON y.name = v.name AND y.vid_id = v.vid_id ORDER BY RANDOM() LIMIT "+nlinks+";";
             break;
         case "spit":
             if (nlinks == "long") {
