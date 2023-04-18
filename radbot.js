@@ -198,7 +198,7 @@ chatbot.start(async (response) => {
     }
 
 
-    const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(.*?((?=[&#?])|$))/;
+    const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(?!.*playlist)(.*?((?=[&#?])|$))/;
     
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
