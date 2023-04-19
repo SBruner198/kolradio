@@ -190,8 +190,18 @@ chatbot.start(async (response) => {
     // Link handling, please move into its own function soon.
     if (msg.includes("http") && !msg.includes("showplayer")) {
         const link_regex = /(https?:\/\/[^\s]+(?="))/g;
+        const file_regex = /(gif|png|jpg)/;
         const matches = msg.match(link_regex);
-        link = matches ? matches[0] : ""; 
+
+        if (matches) {
+            if (file_regex.test(matches[0]) && (matches.length == 3)) {
+                link = matches[1]
+            } else if (matches.length == 1) {
+                link = matches[0]
+            }
+        } else {
+            link = ""
+        }
         console.log(timestamp);
         console.log(response);
         console.log(link);
@@ -199,7 +209,7 @@ chatbot.start(async (response) => {
 
 
     const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(?!.*playlist)(.*?((?=[&#?])|$))/;
-    
+
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
         const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
