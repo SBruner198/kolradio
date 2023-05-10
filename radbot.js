@@ -239,6 +239,61 @@ chatbot.start(async (response) => {
         }
         console.log(`[${timestamp}] YouTube Link inserted successfully`);
         });
+
+        // Just a fun easter egg response when a certain number of videos has been reached.
+        async function row_count() {
+            const rowCount = await runQuery(db, 'SELECT COUNT(*) as rowCount FROM youtube');
+            console.log(`The number of rows in youtube is: ${rowCount.rowCount}`);
+            switch (rowCount.rowCount) {
+                case 1111:
+                    console.log('better switch up that attitude');
+                    return response.reply(
+                        `1111 songs? (That's ridiculous. It's not even funny.)^2`
+                    );
+                    break;
+                case 1234:
+                    console.log('OCD baby');
+                    return response.reply(
+                        `1234 crunchy jams. This sequence pleases the circuits.`
+                    );
+                    break;
+                case 1337:
+                    console.log('31337 64M3R');
+                    return response.reply(
+                        `Thank you for the 1337th banger. Witness my final form, n00b.`
+                    );
+                    break;
+                case 1776:
+                    console.log('CAWCAW');
+                    return response.reply(
+                        `1776 straight hits played? Time for the revolution!`
+                    );
+                    break;
+                case 2023:
+                    console.log('Oh hey');
+                    return response.reply(
+                        `RadBot's Log: Songs, 2023. This is the hottest track I've ever heard.`
+                    );
+                    break;
+            }
+        };
+        
+        function runQuery(db, query) {
+            return new Promise((resolve, reject) => {
+                db.get(query, (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
+        }
+
+        row_count().catch((err) => {
+            console.error('Error: ', err.message);
+        });
+
     } else if (link && !msg.toLowerCase().includes("showplayer")) {
         // Insert data into SQLite database
         db.run(`INSERT INTO nontube (timestamp, name, player_id, link) VALUES (?, ?, ?, ?)`, [timestamp, who.name, who.id, link], function(err) {
