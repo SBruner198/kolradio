@@ -212,7 +212,7 @@ chatbot.start(async (response) => {
 
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
-        const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
+        const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
         const vid_id = vid_id_regex.exec(link)[1];
         console.log(vid_id);
 
@@ -266,7 +266,7 @@ chatbot.start(async (response) => {
                 case 1776:
                     console.log('CAWCAW');
                     return response.reply(
-                        `1776 straight hits played? Time for the revolution!`
+                        `1776 straight5 hits played? Time for the revolution!`
                     );
                     break;
                 case 2023:
