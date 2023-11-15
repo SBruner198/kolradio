@@ -128,8 +128,8 @@ chatbot.start(async (response) => {
         case "last":
             if (args[1].toLowerCase() == 'last' && isNumeric(args[2]) && args[2] < 21) {
               //await bot.sendKmail(id, (args[2]));
-              //console.log(args[2])
-                const links = await get_link(args[1], args[2]);
+                const args_1 = args[1].toLowerCase();
+                const links = await get_link(args_1, args[2]);
                 await chatbot.sendKmail(who.id, links);
                 //linksCache = null;
                 
@@ -149,7 +149,8 @@ chatbot.start(async (response) => {
             if (args[1].toLowerCase() == 'shuffle' && isNumeric(args[2]) && parseInt(args[2]) < 21) {
                 //await bot.sendKmail(id, (args[2]));
                 //console.log(args[2])
-                const links = await get_link(args[1], parseInt(args[2]));
+                const args_1 = args[1].toLowerCase();
+                const links = await get_link(args_1, parseInt(args[2]));
                 chatbot.sendKmail(who.id, links);
                 //linksCache = null;
                 //chatbot.sendKmail(who.id, get_link(args[2]));
@@ -164,17 +165,20 @@ chatbot.start(async (response) => {
             };
             break;
         case "spit":
-            if (args[1] == "spit" && isNumeric(args[2])) {
+            if (args[1].toLowerCase() == "spit" && isNumeric(args[2])) {
                 return response.reply(
                     `Are you trying to get me in trouble? I hock em one at a time friend.`
                 );
                 //console.log("Whelp")
-            } else if (args[1] == "spit" && (args[2] == "long" || args[2] == "short")) {
-                const spit = await get_link(args[1], args[2]);
+            } else if (args[1].toLowerCase() == "spit" && (args[2].toLowerCase() == "long" || args[2].toLowerCase() == "short")) {
+                const args_1 = args[1].toLowerCase();
+                const args_2 = args[2].toLowerCase();
+                const spit = await get_link(args_1, args_2);
                 console.log(spit)
                 return response.reply(spit);
             } else {
-                const spit = await get_link(args[1]);
+                const args_1 = args[1].toLowerCase();
+                const spit = await get_link(args_1);
                 console.log(spit)
                 //console.log(get_link(args[1]))
                 return response.reply(spit);
@@ -275,6 +279,24 @@ chatbot.start(async (response) => {
                         `RadBot's Log: Songs, 2023. This is the hottest track I've ever heard.`
                     );
                     break;
+                case 4000:
+                    console.log('Jammin in 4k');
+                    return response.reply(
+                        `Thank you kind Loather for song #4000. Now we're jammin' in 4K.`
+                    );
+                    break;
+                case 5000:
+                    console.log('Ran a 5k!');
+                    return response.reply(
+                        `/em *huff* *huff* has just finished their first 5k. Keep em coming!`
+                    );
+                    break;
+                    case 5054:
+                        console.log('Heads or tails');
+                        return response.reply(
+                            `5050 huh? I'll take those odds.`
+                        );
+                        break;
             }
         };
         
