@@ -170,12 +170,14 @@ chatbot.start(async (response) => {
                     `Are you trying to get me in trouble? I hock em one at a time friend.`
                 );
                 //console.log("Whelp")
-            } else if (args[1].toLowerCase() == "spit" && (args[2].toLowerCase() == "long" || args[2].toLowerCase() == "short")) {
-                const args_1 = args[1].toLowerCase();
-                const args_2 = args[2].toLowerCase();
-                const spit = await get_link(args_1, args_2);
-                console.log(spit)
-                return response.reply(spit);
+            } else if (args[1].toLowerCase() == "spit" && args[2]) {
+                if (args[1].toLowerCase() == "spit" && (args[2].toLowerCase() == "long" || args[2].toLowerCase() == "short")) {
+                    const args_1 = args[1].toLowerCase();
+                    const args_2 = args[2].toLowerCase();
+                    const spit = await get_link(args_1, args_2);
+                    console.log(spit)
+                    return response.reply(spit);
+                }
             } else {
                 const args_1 = args[1].toLowerCase();
                 const spit = await get_link(args_1);
