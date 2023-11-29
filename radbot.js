@@ -28,6 +28,35 @@ const chatbot = new KoLBot(username, password)
 // Promisify query (prevents callbacks)h
 //const query = promisify(db.all).bind(db);
 
+// Shared state or queue
+let messageQueue = [];
+
+let lastHour = DateTime.now().hour;
+
+function checkNewHour() {
+    const currentHour = DateTime.now().hour;
+    if (currentHour !== lastHour) {
+        lastHour = currentHour;
+        console.log(currentHour);
+        onNewHour();
+    }
+}
+
+// Function to execute on new hour
+async function onNewHour() {
+    try {
+        const spitLink = await get_link("spit");
+        //chatbot.sendMessage(spitLink); // Replace with the actual method to send a message
+        //Add to messageQueue for chatbot.start() to reference
+        messageQueue.push(spitLink);
+    } catch (error) {
+        console.error("Error in onNewHour:", error);
+    }
+}
+
+// Set interval to check every minute
+setInterval(checkNewHour, 60000);
+
 // Function to hopefully check for numerics
 function isNumeric(value) {
     return /^\d+$/.test(value);
@@ -101,8 +130,32 @@ chatbot.start(async (response) => {
 
     const timestamp = DateTime.now().toFormat("y'-'MM'-'dd' 'TT").toString();
 
+
+    // Check if there are messages in the queue for the Hourly Spit-tune
+    //if (messageQueue.length > 0) {25
+        // Send each message, then clear
+
+    //} 
     const { who, msg } = response;
 
+    // Periodically check the queue
+    setInterval(() => {
+        while (messageQueue.length > 0) {
+            console.log(messageQueue);
+            const message = messageQueue.shift();
+            console.log(message);
+            try {
+                chatbot.sendMessage('radio', message);
+                //chatbot.sendWhisper(643499, message);     
+            } catch (error) {
+                console.error("Error sending message:", error);
+            }
+        }
+    }, 5000); // Check every 5 seconds
+    
+
+    console.log("messageQueue")
+    console.log(messageQueue)
     let link = "";
     console.log(timestamp)
     console.log(response)
@@ -214,7 +267,7 @@ chatbot.start(async (response) => {
     }
 
 
-    const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(?!.*playlist)(.*?((?=[&#?])|$))/;
+    const youtube_test = 54;
 
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
