@@ -266,13 +266,21 @@ chatbot.start(async (response) => {
         console.log(link);
     }
 
-
-    const youtube_test = 54;
+    const youtube_test = /(youtu.*be.*)\/((watch\?v=|live\/)|embed\/|v|shorts|)(?!.*playlist)(.*?((?=[&#?])|$))/;
+    // Not sure why I added the below line in the first place..
+    //const youtube_test = 54;
 
     if (link && !msg.toLowerCase().includes("showplayer") && youtube_test.test(link)) {
         // if youtube video, obtain id
+        //const vid_id_regex = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
         const vid_id_regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtube\.com\/live\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11}).*$/;
-        const vid_id = vid_id_regex.exec(link)[1];
+        let vid_id;
+        try {
+            vid_id = vid_id_regex.exec(link)[1]
+        } catch (error) {
+            return console.error(error); 
+        };
+         
         console.log(vid_id);
 
         const videoInfo = await get_info(vid_id, apiKey)
